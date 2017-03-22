@@ -83,4 +83,70 @@ function data_aacr2_edit_property_metadata() {
     echo 'data_aacr2_edit_property(elem);';
 }
 
+/******** Editando o html da propriedade data ************/
+add_action('modificate_insert_item_properties_data', 'data_aacr2_form_item_data_widget', 11, 1);
+add_action('modificate_edit_item_properties_data', 'data_aacr2_form_item_data_widget', 11, 1);
+function data_aacr2_form_item_data_widget($property) {
+    $i = $property['contador'];
+    ?>
+           <script>
+            $(function() {
+                $( "#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>" ).datepicker({
+                    dateFormat: 'dd/mm/yy',
+                    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+                    dayNamesMin: ['D','S','T','Q','Q','S','S','D'],
+                    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],
+                    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+                    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+                    nextText: 'Próximo',
+                    prevText: 'Anterior',
+                    showOn: "button",
+                    buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+                    buttonImageOnly: true
+                });
+            });
+        </script>    
+        <span id="input-date-<?php echo $property['id']; ?>" >
+            <input 
+                style="margin-right: 5px;" 
+                size="13" 
+                class="input_date auto-save form_autocomplete_value_<?php echo $property['id']; ?>" 
+                value="<?php if ($property['metas']['value']) echo (isset($property['metas']['value'][$i]) ? data_aacr2_get_date_edit($property['metas']['value'][$i]) :''); ?>"
+                type="text" 
+                id="socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                name="socialdb_property_<?php echo $property['id']; ?>[]">   
+            <br><br>
+        </span>
+        <?php if(isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
+            <input type="checkbox" onchange="showContainerApproximate(this,'<?php echo $property['id']; ?>')" name="aproximate_date"><?php _e('Allow approximate date','tainacan')  ?>
+            <br>
+            <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
+                <span class="col-md-2 no-padding">
+                    <input type="text" class="form-control">
+                </span>
+                <span class="col-md-3">
+                    <select class="form-control">
+                        <option value="exactly_date">Data exata- 01/01/1970</option>
+                        <option value="year_year">Um ano ou outro - [1971 ou 1972]</option>
+                        <option value="probably_date">Data provável - [1969?]</option>
+                        <option value="between_date">Entre datas com menos 20 anos de diferença - [entre 1906 e 1912] </option>
+                        <option value="approximate_date">Data aproximada -  [ca. 1960] </option>
+                        <option value="exactly_decade">Década certa - [197-]</option>
+                        <option value="probably_decade">Década provável - [197-?]</option>
+                        <option value="exactly_century">Século certo - [18--]</option>
+                        <option value="probably_century">Século provável - [18--?]</option>
+                    </select>
+                </span>    
+            </span>
+        <?php endif; ?>
+    <?php
+}
+function data_aacr2_get_date_edit($value){
+    if(strpos($value, '-')!==false){
+         return explode('-', $value)[2].'/' .explode('-',$value)[1].'/' .explode('-',$value)[0];
+    }else{
+        return $value;
+    }
+}
+
 
