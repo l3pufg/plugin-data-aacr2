@@ -203,7 +203,7 @@ function update_date_value($property,$all_data){
                 $values = explode('e', $date);
                 $first_value = str_replace(' ', '', $values[0]);
                 $second_value = str_replace(' ', '', $values[1]);
-                if((int)$first_value>(int)$second_value){
+                if((int)$first_value<(int)$second_value){
                    $first_value = $first_value.'-01-01';
                    $second_value = $second_value.'-12-31';
                 }else{
