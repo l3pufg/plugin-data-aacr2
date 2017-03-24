@@ -174,16 +174,16 @@ function update_date_value($property,$all_data){
             $property->type=='date' && 
             isset($all_data['aproximate_date_'.$property->id]) && 
             $all_data['aproximate_date_'.$property->id] == 'on' && 
-            $all_data["socialdb_property_'.$property->id.'_approximate_date"] != ''){
+            $all_data["socialdb_property_".$property->id."_approximate_date"] != ''){
         $object_id = $all_data['object_id'];
         switch ($all_data['socialdb_property_'.$property->id.'_approximate_date_type']){
             case 'exactly_date':
-                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
                 $value = explode('/', $date)[2].'-' .explode('/',$date)[1].'-' .explode('/',$date)[0];
                 add_post_meta($object_id, "socialdb_property_$property->id", $value);
                 return true;
             case 'year_year':
-                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
                 $values = explode('ou', $date);
                 $first_value = str_replace(' ', '', $values[0]);
                 $second_value = str_replace(' ', '', $values[1]);
@@ -198,7 +198,7 @@ function update_date_value($property,$all_data){
                 add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
                 return true;
             case 'between_date':
-                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
                 $date = str_replace('Entre ', '', $date);
                 $values = explode('e', $date);
                 $first_value = str_replace(' ', '', $values[0]);
@@ -213,12 +213,56 @@ function update_date_value($property,$all_data){
                 add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
                 add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
                 return true;
+            case 'probably_date':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('?', '', $date);
+                $second_value = $year.'-01-01';
+                $first_value = $year.'-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;
+            case 'approximate_date':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('ca. ', '', $date);
+                $second_value = $year.'-01-01';
+                $first_value = $year.'-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;  
+            case 'exactly_decade':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('-', '', $date);
+                $second_value = $year.'0-01-01';
+                $first_value = $year.'9-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;
+             case 'probably_decade':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('-?', '', $date);
+                $second_value = $year.'0-01-01';
+                $first_value = $year.'9-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;  
+            case 'exactly_century':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('--', '', $date);
+                $second_value = $year.'00-01-01';
+                $first_value = $year.'99-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;
+             case 'probably_century':
+                $date = $all_data["socialdb_property_".$property->id."_approximate_date"] ;
+                $year = str_replace('--?', '', $date);
+                $second_value = $year.'00-01-01';
+                $first_value = $year.'99-12-31';
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;     
                 
         }
-        
     }
     return false;
-    var_dump($all_data,$property);
-    exit();
-    return true;
 }
