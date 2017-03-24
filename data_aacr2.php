@@ -131,14 +131,14 @@ function data_aacr2_form_item_data_widget($property) {
         <br><br>
     </span>
     <?php if (isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
-        <input type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date"><?php _e('Allow approximate date', 'tainacan') ?>
+        <input type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
         <br>
         <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
             <span class="col-md-2 no-padding">
-                <input type="text" class="form-control data_aproximada" id="input_date_aacr2">
+                <input type="text" class="form-control data_aproximada" id="input_date_aacr2" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
-                <select class="form-control" onchange="change_data_input_mask(this.value)">
+                <select class="form-control" onchange="change_data_input_mask(this.value)" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
                     <option value="exactly_date">Data exata- 01/01/1970</option>
                     <option value="year_year">Um ano ou outro - [1971 ou 1972]</option>
                     <option value="probably_date">Data provável - [1969?]</option>
@@ -161,4 +161,64 @@ function data_aacr2_get_date_edit($value) {
     } else {
         return $value;
     }
+}
+
+add_filter('alter_update_item_property_value', 'update_date_value', 10, 2);
+/**
+ * 
+ * @param type $property
+ * @param type $all_data
+ */
+function update_date_value($property,$all_data){
+    if(isset($property->type) && 
+            $property->type=='date' && 
+            isset($all_data['aproximate_date_'.$property->id]) && 
+            $all_data['aproximate_date_'.$property->id] == 'on' && 
+            $all_data["socialdb_property_'.$property->id.'_approximate_date"] != ''){
+        $object_id = $all_data['object_id'];
+        switch ($all_data['socialdb_property_'.$property->id.'_approximate_date_type']){
+            case 'exactly_date':
+                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $value = explode('/', $date)[2].'-' .explode('/',$date)[1].'-' .explode('/',$date)[0];
+                add_post_meta($object_id, "socialdb_property_$property->id", $value);
+                return true;
+            case 'year_year':
+                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $values = explode('ou', $date);
+                $first_value = str_replace(' ', '', $values[0]);
+                $second_value = str_replace(' ', '', $values[1]);
+                if((int)$first_value>(int)$second_value){
+                   $first_value = $first_value.'-01-01';
+                   $second_value = $second_value.'-12-31';
+                }else{
+                    $second_value = $second_value.'-01-01';
+                    $first_value = $first_value.'-12-31';
+                }
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;
+            case 'between_date':
+                $date = $all_data['socialdb_property_'.$property->id.'_approximate_date'];
+                $date = str_replace('Entre ', '', $date);
+                $values = explode('e', $date);
+                $first_value = str_replace(' ', '', $values[0]);
+                $second_value = str_replace(' ', '', $values[1]);
+                if((int)$first_value>(int)$second_value){
+                   $first_value = $first_value.'-01-01';
+                   $second_value = $second_value.'-12-31';
+                }else{
+                    $second_value = $second_value.'-01-01';
+                    $first_value = $first_value.'-12-31';
+                }
+                add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
+                return true;
+                
+        }
+        
+    }
+    return false;
+    var_dump($all_data,$property);
+    exit();
+    return true;
 }
