@@ -38,7 +38,7 @@ function data_aacr2_checkbox($type) {
         ?>
         <hr>
         <div class="row col-md-12">
-            <input type="checkbox" name="socialdb_event_property_is_aproximate_date" id="socialdb_event_property_is_aproximate_date" value="1" />&nbsp;<?php _e('Allow Proximity Date', 'tainacan'); ?>
+            <input type="checkbox" onchange="block_multiple_values(this)" name="socialdb_event_property_is_aproximate_date" id="socialdb_event_property_is_aproximate_date" value="1" />&nbsp;<?php _e('Allow Proximity Date', 'tainacan'); ?>
         </div>
         <?php
     }
