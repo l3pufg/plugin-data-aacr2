@@ -188,12 +188,12 @@ function update_date_value($property, $all_data) {
                 $values = explode('ou', $date);
                 $first_value = str_replace(' ', '', $values[0]);
                 $second_value = str_replace(' ', '', $values[1]);
-                if ((int) $first_value > (int) $second_value) {
-                    $first_value = $first_value . '-01-01';
-                    $second_value = $second_value . '-12-31';
-                } else {
-                    $second_value = $second_value . '-01-01';
-                    $first_value = $first_value . '-12-31';
+                if((int)$first_value<(int)$second_value){
+                   $first_value = $first_value.'-01-01';
+                   $second_value = $second_value.'-12-31';
+                }else{
+                    $second_value = $second_value.'-01-01';
+                    $first_value = $first_value.'-12-31';
                 }
                 add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
                 add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
