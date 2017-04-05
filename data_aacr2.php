@@ -117,6 +117,9 @@ function data_aacr2_form_item_data_widget($property) {
                 buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
                 buttonImageOnly: true
             });
+            
+            $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
+            $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass(mask);
         });
     </script>    
     <span id="input-date-<?php echo $property['id']; ?>" >
@@ -135,7 +138,7 @@ function data_aacr2_form_item_data_widget($property) {
         <br>
         <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
             <span class="col-md-2 no-padding">
-                <input type="text" class="form-control data_aproximada" id="input_date_aacr2" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
+                <input type="text" class="form-control data_aproximada" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
                 <select class="form-control" onchange="change_data_input_mask(this.value)" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
