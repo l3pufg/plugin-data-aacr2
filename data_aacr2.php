@@ -91,6 +91,8 @@ add_action('modificate_edit_item_properties_data', 'data_aacr2_form_item_data_wi
 
 function data_aacr2_form_item_data_widget($property) {
     $i = $property['contador'];
+    $meta = get_post_meta($property['object_id'], "socialdb_property_{$property['id']}_date", true);
+    $type = get_post_meta($property['object_id'], "socialdb_property_{$property['id']}_date_type", true);
     ?>
     <script>
         $(function () {
@@ -118,8 +120,19 @@ function data_aacr2_form_item_data_widget($property) {
                 buttonImageOnly: true
             });
             
-            $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
-            $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass(mask);
+            $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').change(function(){
+                $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
+                $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
+            });
+            //se tiver algum valor adicionado
+            <?php if($meta && !empty($meta) && $type): ?>
+                $('#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
+                $('#container_<?php echo $property['id']; ?>_<?php echo $i; ?>').attr('checked','checked');
+                $('#input-date-<?php echo $property['id']; ?>').hide();
+                $('#container-approximate-date-<?php echo $property['id']; ?>').show();
+                $('#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('<?php echo $meta; ?>');
+                $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?> option[value="<?php echo $type; ?>"]').attr('selected','checked');
+            <?php endif; ?>
         });
     </script>    
     <span id="input-date-<?php echo $property['id']; ?>" >
@@ -134,14 +147,17 @@ function data_aacr2_form_item_data_widget($property) {
         <br><br>
     </span>
     <?php if (isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
-        <input type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
+        <input id='container_<?php echo $property['id']; ?>_<?php echo $i; ?>' type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
         <br>
         <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
             <span class="col-md-2 no-padding">
-                <input type="text" class="form-control data_aproximada" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
+                <input type="text" 
+                       value='<?php echo ($meta) ? $meta : '' ?>'
+                       class="form-control data_aproximada" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                       name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
-                <select class="form-control" onchange="change_data_input_mask(this.value)" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
+                <select id='select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>' class="form-control" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
                     <option value="exactly_date">Data exata- 01/01/1970</option>
                     <option value="year_year">Um ano ou outro - [1971 ou 1972]</option>
                     <option value="probably_date">Data provável - [1969?]</option>
@@ -180,6 +196,10 @@ function update_date_value($property, $all_data) {
             $all_data['aproximate_date_' . $property->id] == 'on' &&
             $all_data["socialdb_property_" . $property->id . "_approximate_date"] != '') {
         $object_id = $all_data['object_id'];
+        if(!empty(trim($all_data["socialdb_property_" . $property->id . "_approximate_date"]))){
+            add_post_meta($object_id, "socialdb_property_{$property->id}_date", $all_data["socialdb_property_" . $property->id . "_approximate_date"]);
+            add_post_meta($object_id, "socialdb_property_{$property->id}_date_type", $all_data["socialdb_property_" . $property->id . "_approximate_date_type"]);
+        }
         switch ($all_data['socialdb_property_' . $property->id . '_approximate_date_type']) {
             case 'exactly_date':
                 $date = $all_data["socialdb_property_" . $property->id . "_approximate_date"];
