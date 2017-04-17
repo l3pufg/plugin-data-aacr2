@@ -119,20 +119,52 @@ function data_aacr2_form_item_data_widget($property) {
                 buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
                 buttonImageOnly: true
             });
-            
-            $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').change(function(){
+
+            $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').change(function () {
                 $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
                 $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
             });
+            //validate
+            $(".form_autocomplete_value_" + <?php echo $property['id']; ?>+ '_<?php echo $i; ?>').keyup(function () {
+                var cont = 0;
+                $(".form_autocomplete_value_" + <?php echo $property['id']; ?> + '_<?php echo $i; ?>').each(function (index, value) {
+                    if ($(this).val().trim() !== '') {
+                        cont++;
+                    }
+                });
+
+                if (cont === 0) {
+                    $('#core_validation_' + <?php echo $property['id']; ?>).val('false');
+                } else {
+                    $('#core_validation_' + <?php echo $property['id']; ?>).val('true');
+                }
+
+                set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
+            });
+            $(".form_autocomplete_value_" + <?php echo $property['id']; ?> + '_<?php echo $i; ?>').change(function () {
+                var cont = 0;
+                $(".form_autocomplete_value_" + <?php echo $property['id']; ?>+ '_<?php echo $i; ?>').each(function (index, value) {
+                    if ($(this).val().trim() !== '') {
+                        cont++;
+                    }
+                });
+
+                if (cont === 0) {
+                    $('#core_validation_' + <?php echo $property['id']; ?>).val('false');
+                } else {
+                    $('#core_validation_' + <?php echo $property['id']; ?>).val('true');
+                }
+                set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
+            });
             //se tiver algum valor adicionado
-            <?php if($meta && !empty($meta) && $type): ?>
+    <?php if ($meta && !empty($meta) && $type): ?>
                 $('#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('');
-                $('#container_<?php echo $property['id']; ?>_<?php echo $i; ?>').attr('checked','checked');
+                $('#container_<?php echo $property['id']; ?>_<?php echo $i; ?>').attr('checked', 'checked');
                 $('#input-date-<?php echo $property['id']; ?>').hide();
                 $('#container-approximate-date-<?php echo $property['id']; ?>').show();
                 $('#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('<?php echo $meta; ?>');
-                $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?> option[value="<?php echo $type; ?>"]').attr('selected','checked');
-            <?php endif; ?>
+                $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?> option[value="<?php echo $type; ?>"]').attr('selected', 'checked');
+    <?php endif; ?>
         });
     </script>    
     <span id="input-date-<?php echo $property['id']; ?>" >
@@ -153,7 +185,7 @@ function data_aacr2_form_item_data_widget($property) {
             <span class="col-md-2 no-padding">
                 <input type="text" 
                        value='<?php echo ($meta) ? $meta : '' ?>'
-                       class="form-control data_aproximada" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?>" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
                        name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
@@ -196,7 +228,7 @@ function update_date_value($property, $all_data) {
             $all_data['aproximate_date_' . $property->id] == 'on' &&
             $all_data["socialdb_property_" . $property->id . "_approximate_date"] != '') {
         $object_id = $all_data['object_id'];
-        if(!empty(trim($all_data["socialdb_property_" . $property->id . "_approximate_date"]))){
+        if (!empty(trim($all_data["socialdb_property_" . $property->id . "_approximate_date"]))) {
             add_post_meta($object_id, "socialdb_property_{$property->id}_date", $all_data["socialdb_property_" . $property->id . "_approximate_date"]);
             add_post_meta($object_id, "socialdb_property_{$property->id}_date_type", $all_data["socialdb_property_" . $property->id . "_approximate_date_type"]);
         }
@@ -211,12 +243,12 @@ function update_date_value($property, $all_data) {
                 $values = explode('ou', $date);
                 $first_value = str_replace(' ', '', $values[0]);
                 $second_value = str_replace(' ', '', $values[1]);
-                if((int)$first_value<(int)$second_value){
-                   $first_value = $first_value.'-01-01';
-                   $second_value = $second_value.'-12-31';
-                }else{
-                    $second_value = $second_value.'-01-01';
-                    $first_value = $first_value.'-12-31';
+                if ((int) $first_value < (int) $second_value) {
+                    $first_value = $first_value . '-01-01';
+                    $second_value = $second_value . '-12-31';
+                } else {
+                    $second_value = $second_value . '-01-01';
+                    $first_value = $first_value . '-12-31';
                 }
                 add_post_meta($object_id, "socialdb_property_$property->id", $second_value);
                 add_post_meta($object_id, "socialdb_property_$property->id", $first_value);
