@@ -28,7 +28,7 @@
  *      Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  *      MA 02110-1301, USA.
  */
-
+load_theme_textdomain("tainacan", dirname(__FILE__) . "/languages");
 /* * *************************** */
 //Cria o checkbox de para metadados do tipo data
 add_action('tainacan_date_aacr2', 'data_aacr2_checkbox', 10, 1);
