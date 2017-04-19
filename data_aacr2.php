@@ -132,14 +132,22 @@ function data_aacr2_form_item_data_widget($property) {
                         cont++;
                     }
                 });
-
+                <?php if(!isset($property['compound_id'])): ?>
                 if (cont === 0) {
                     $('#core_validation_' + <?php echo $property['id']; ?>).val('false');
                 } else {
                     $('#core_validation_' + <?php echo $property['id']; ?>).val('true');
                 }
-
                 set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
+                <?php else: ?>
+                if( cont===0){
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('false');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
+                }else{
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('true');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
+                }
+                <?php endif ?>
             });
             $(".form_autocomplete_value_" + <?php echo $property['id']; ?> + '_<?php echo $i; ?>').change(function () {
                 var cont = 0;
@@ -149,12 +157,22 @@ function data_aacr2_form_item_data_widget($property) {
                     }
                 });
 
+                <?php if(!isset($property['compound_id'])): ?>
                 if (cont === 0) {
                     $('#core_validation_' + <?php echo $property['id']; ?>).val('false');
                 } else {
                     $('#core_validation_' + <?php echo $property['id']; ?>).val('true');
                 }
                 set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
+                <?php else: ?>
+                if( cont===0){
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('false');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
+                }else{
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('true');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
+                }
+                <?php endif ?>
             });
             //se tiver algum valor adicionado
     <?php if ($meta && !empty($meta) && $type): ?>
