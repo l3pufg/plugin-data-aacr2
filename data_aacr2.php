@@ -203,7 +203,7 @@ function data_aacr2_form_item_data_widget($property) {
             <span class="col-md-2 no-padding">
                 <input type="text" 
                        value='<?php echo ($meta) ? $meta : '' ?>'
-                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?>" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
                        name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
