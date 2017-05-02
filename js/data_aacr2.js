@@ -8,12 +8,19 @@ function data_aacr2_edit_property(elem) {
 }
 
 function showContainerApproximate(checkbox, id) {
+    var i = $(checkbox).attr('id').split('_')[2];
     if ($(checkbox).is(':checked')) {
         $('#input-date-' + id).hide();
         $('#container-approximate-date-' + id).show();
+        $('#input_date_aacr2_'+id+'_'+i).val('');
+        $('#socialdb_property_'+id+'_'+i).val('');
+         $('#input_date_aacr2_'+id+'_'+i).trigger('keyup');
     } else {
         $('#input-date-' + id).show();
         $('#container-approximate-date-' + id).hide();
+        $('#socialdb_property_'+id+'_'+i).val('');
+         $('#input_date_aacr2_'+id+'_'+i).val('');
+         $('#socialdb_property_'+id+'_'+i).trigger('keyup');
     }
 }
 

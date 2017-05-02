@@ -128,6 +128,7 @@ function data_aacr2_form_item_data_widget($property) {
             $(".form_autocomplete_value_" + <?php echo $property['id']; ?>+ '_<?php echo $i; ?>').keyup(function () {
                 var cont = 0;
                 $(".form_autocomplete_value_" + <?php echo $property['id']; ?> + '_<?php echo $i; ?>').each(function (index, value) {
+                    console.log($(this).val(),$(this));
                     if ($(this).val().trim() !== '') {
                         cont++;
                     }
