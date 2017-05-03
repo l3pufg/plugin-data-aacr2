@@ -194,7 +194,7 @@ function data_aacr2_form_item_data_widget($property) {
             value="<?php if ($property['metas']['value']) echo (isset($property['metas']['value'][$i]) ? data_aacr2_get_date_edit($property['metas']['value'][$i]) : ''); ?>"
             type="text" 
             id="socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
-            name="socialdb_property_<?php echo $property['id']; ?>[]">   
+            name="<?php if(isset($property['name_field'])): echo $property['name_field'];  else: ?> socialdb_property_<?php echo $property['id']; ?>[] <?php endif; ?>">   
         <br><br>
     </span>
     <?php if (isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
