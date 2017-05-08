@@ -2,10 +2,10 @@
 /*
   Plugin Name: Data AACR2
   Version: 1.0
-  Description: Tainacan extra plugin.
-  Author: Tainacan TI Team
-  Author URI: http://site.gi.fic.ufg.br/
-  Plugin URI: http://site.gi.fic.ufg.br/
+  Description: Funcionalidades extras do Tainacan especialmente para o IBRAM.
+  Author: Marcus B. Molinari
+  Author URI: https://github.com/medialab-ufg/plugin-data-aacr2
+  Plugin URI: https://github.com/medialab-ufg/plugin-data-aacr2
   Text Domain: tainacan
   Domain Path: languages
  */
