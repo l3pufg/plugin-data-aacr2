@@ -247,6 +247,7 @@ function update_date_value($property, $all_data) {
             $all_data['aproximate_date_' . $property->id] == 'on' &&
             $all_data["socialdb_property_" . $property->id . "_approximate_date"] != '') {
         $object_id = $all_data['object_id'];
+        delete_post_meta($object_id, "socialdb_property_$property->id");
         if (!empty(trim($all_data["socialdb_property_" . $property->id . "_approximate_date"]))) {
             add_post_meta($object_id, "socialdb_property_{$property->id}_date", $all_data["socialdb_property_" . $property->id . "_approximate_date"]);
             add_post_meta($object_id, "socialdb_property_{$property->id}_date_type", $all_data["socialdb_property_" . $property->id . "_approximate_date_type"]);
