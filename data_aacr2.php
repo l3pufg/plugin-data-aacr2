@@ -183,6 +183,8 @@ function data_aacr2_form_item_data_widget($property) {
                 $('#container-approximate-date-<?php echo $property['id']; ?>').show();
                 $('#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('<?php echo $meta; ?>');
                 $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?> option[value="<?php echo $type; ?>"]').attr('selected', 'checked');
+                $('#select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').trigger('change');
+                $('#input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>').val('<?php echo $meta; ?>');
     <?php endif; ?>
         });
     </script>    
@@ -249,8 +251,10 @@ function update_date_value($property, $all_data) {
         $object_id = $all_data['object_id'];
         delete_post_meta($object_id, "socialdb_property_$property->id");
         if (!empty(trim($all_data["socialdb_property_" . $property->id . "_approximate_date"]))) {
-            update_post_meta($object_id, "socialdb_property_{$property->id}_date", $all_data["socialdb_property_" . $property->id . "_approximate_date"]);
-            update_post_meta($object_id, "socialdb_property_{$property->id}_date_type", $all_data["socialdb_property_" . $property->id . "_approximate_date_type"]);
+            delete_post_meta($object_id, "socialdb_property_{$property->id}_date");
+            add_post_meta($object_id, "socialdb_property_{$property->id}_date", $all_data["socialdb_property_" . $property->id . "_approximate_date"]);
+            delete_post_meta($object_id, "socialdb_property_{$property->id}_date_type");
+            add_post_meta($object_id, "socialdb_property_{$property->id}_date_type", $all_data["socialdb_property_" . $property->id . "_approximate_date_type"]);
         }
         switch ($all_data['socialdb_property_' . $property->id . '_approximate_date_type']) {
             case 'exactly_date':
