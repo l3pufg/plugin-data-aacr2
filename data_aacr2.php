@@ -345,3 +345,88 @@ function update_date_value($property, $all_data) {
     }
     return false;
 }
+
+################################################################################
+//NOVA VERSAO 
+add_action('alter_input_date', 'aacr2_alter_input_date', 11, 1);
+
+function aacr2_alter_input_date($array) {
+    $compound_id = $array['compound']['id'];
+    $property_id = $array['property_id'];
+    $index_id = $array['index'];
+    if ($property_id == 0) {
+        $property = $compound;
+    }
+    ?>
+      <span id="input-date-<?php echo $property['id']; ?>" >
+        <input 
+            style="margin-right: 5px;" 
+            size="13" 
+            class="input_date auto-save form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+            value="<?php if ($property['metas']['value']) echo (isset($property['metas']['value'][$i]) ? data_aacr2_get_date_edit($property['metas']['value'][$i]) : ''); ?>"
+            type="text" 
+            id="date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>" 
+            name="<?php if(isset($property['name_field'])): echo $property['name_field'];  else: ?> socialdb_property_<?php echo $property['id']; ?>[] <?php endif; ?>">   
+        <br><br>
+    </span>
+    <?php if (isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
+        <input id='container_<?php echo $property['id']; ?>_<?php echo $i; ?>' type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
+        <br>
+        <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
+            <span class="col-md-2 no-padding">
+                <input type="text" 
+                       value='<?php echo ($meta) ? $meta : '' ?>'
+                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                       name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
+            </span>
+            <span class="col-md-3">
+                <select id='select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>' class="form-control" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
+                    <option value="exactly_date">Data exata- 01/01/1970</option>
+                    <option value="year_year">Um ano ou outro - [1971 ou 1972]</option>
+                    <option value="probably_date">Data provável - [1969?]</option>
+                    <option value="between_date">Entre datas com menos 20 anos de diferença - [entre 1906 e 1912] </option>
+                    <option value="approximate_date">Data aproximada -  [ca. 1960] </option>
+                    <option value="exactly_decade">Década certa - [197-]</option>
+                    <option value="probably_decade">Década provável - [197-?]</option>
+                    <option value="exactly_century">Século certo - [18--]</option>
+                    <option value="probably_century">Século provável - [18--?]</option>
+                </select>
+            </span>    
+        </span>
+    <?php endif; ?>   
+    <?php
+    initScriptsDate();
+}
+
+
+function initScriptsDate(){
+    ?>
+    <script>
+        $(function () {
+            $('.exactly_date').mask('00/00/0000', {placeholder: "DD/MM/YYYY"});
+            $(".year_year").mask('9999 ou 9999', {placeholder: "YYYY ou YYYY"});
+            $(".probably_date").mask('9999?', {placeholder: "YYYY?"});
+            $(".between_date").mask('Entre 9999 e 9999', {placeholder: "Entre 9999 e 9999"});
+            $(".approximate_date").mask('ca. 9999', {placeholder: "ca. 9999"});
+            $(".exactly_decade").mask('999-', {placeholder: "999-"});
+            $(".probably_decade").mask('999-?', {placeholder: "999-?"});
+            $(".exactly_century").mask('99--', {placeholder: "99--"});
+            $(".probably_century").mask('99--?', {placeholder: "99--?"});
+
+            $("#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>").datepicker({
+                dateFormat: 'dd/mm/yy',
+                dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+                dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+                dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+                monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+                nextText: 'Próximo',
+                prevText: 'Anterior',
+                showOn: "button",
+                buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+                buttonImageOnly: true
+            });
+        });     
+    </script>   
+    <?php    
+}
