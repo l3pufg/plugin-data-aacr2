@@ -354,52 +354,69 @@ function aacr2_alter_input_date($array) {
     $compound_id = $array['compound']['id'];
     $property_id = $array['property_id'];
     $index_id = $array['index'];
+    $item_id = $array['item_id'];
     if ($property_id == 0) {
-        $property = $compound;
+        $property = $array['compound'];
     }
+    $isRequired = ($property['metas'] && $property['metas']['socialdb_property_required'] && $property['metas']['socialdb_property_required'] != 'false') ? true : false;
+    $value_before = $array['value'];
+    $hasValue = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date", true);
+    $hasType = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date_type", true);
     ?>
-      <span id="input-date-<?php echo $property['id']; ?>" >
+        <span id="input-date-<?php echo $property['id']; ?>" style="<?php echo ($hasValue && $hasValue!=='') ? 'display:none;': '' ?>">
         <input 
             style="margin-right: 5px;" 
             size="13" 
             class="input_date auto-save form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
-            value="<?php if ($property['metas']['value']) echo (isset($property['metas']['value'][$i]) ? data_aacr2_get_date_edit($property['metas']['value'][$i]) : ''); ?>"
+            value="<?php echo ($value_before && $value_before !== '' ? $value_before : ''); ?>"
             type="text" 
             id="date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>" 
-            name="<?php if(isset($property['name_field'])): echo $property['name_field'];  else: ?> socialdb_property_<?php echo $property['id']; ?>[] <?php endif; ?>">   
+         >   
         <br><br>
     </span>
-    <?php if (isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1'): ?>
-        <input id='container_<?php echo $property['id']; ?>_<?php echo $i; ?>' type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
+    <?php if ((isset($property['metas']['socialdb_property_is_aproximate_date']) && $property['metas']['socialdb_property_is_aproximate_date'] == '1') || ($hasValue && $hasValue!=='')): ?>
+        <input <?php echo ($hasValue && $hasValue !== '' ? 'checked' : ''); ?> id='container_<?php echo $property['id']; ?>_<?php echo $i; ?>' type="checkbox" onchange="showContainerApproximate(this, '<?php echo $property['id']; ?>')" name="aproximate_date_<?php echo $property['id']; ?>"><?php _e('Allow approximate date', 'tainacan') ?>
         <br>
-        <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="display:none;">
+        <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="<?php echo ($hasValue && $hasValue!=='') ? '': 'display:none;' ?>">
             <span class="col-md-2 no-padding">
                 <input type="text" 
-                       value='<?php echo ($meta) ? $meta : '' ?>'
-                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date" id="input_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>" 
+                       value=""
+                       id="date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>"
+                       value=""
+                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date" 
                        name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
-                <select id='select_date_aacr2_<?php echo $property['id']; ?>_<?php echo $i; ?>' class="form-control" name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
-                    <option value="exactly_date">Data exata- 01/01/1970</option>
-                    <option value="year_year">Um ano ou outro - [1971 ou 1972]</option>
-                    <option value="probably_date">Data provável - [1969?]</option>
-                    <option value="between_date">Entre datas com menos 20 anos de diferença - [entre 1906 e 1912] </option>
-                    <option value="approximate_date">Data aproximada -  [ca. 1960] </option>
-                    <option value="exactly_decade">Década certa - [197-]</option>
-                    <option value="probably_decade">Década provável - [197-?]</option>
-                    <option value="exactly_century">Século certo - [18--]</option>
-                    <option value="probably_century">Século provável - [18--?]</option>
+                <select id="date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>"
+                        class="form-control" 
+                        name="socialdb_property_<?php echo $property['id']; ?>_approximate_date_type">
+                    <option <?php echo ($hasType && $hasType == 'exactly_date') ? 'selected':'' ?> value="exactly_date">Data exata- 01/01/1970</option>
+                    <option <?php echo ($hasType && $hasType == 'year_year') ? 'selected':'' ?> value="year_year">Um ano ou outro - [1971 ou 1972]</option>
+                    <option <?php echo ($hasType && $hasType == 'probably_date') ? 'selected':'' ?> value="probably_date">Data provável - [1969?]</option>
+                    <option <?php echo ($hasType && $hasType == 'between_date') ? 'selected':'' ?> value="between_date">Entre datas com menos 20 anos de diferença - [entre 1906 e 1912] </option>
+                    <option <?php echo ($hasType && $hasType == 'approximate_date') ? 'selected':'' ?> value="approximate_date">Data aproximada -  [ca. 1960] </option>
+                    <option <?php echo ($hasType && $hasType == 'exactly_decade') ? 'selected':'' ?> value="exactly_decade">Década certa - [197-]</option>
+                    <option <?php echo ($hasType && $hasType == 'probably_decade') ? 'selected':'' ?> value="probably_decade">Década provável - [197-?]</option>
+                    <option <?php echo ($hasType && $hasType == 'exactly_century') ? 'selected':'' ?> value="exactly_century">Século certo - [18--]</option>
+                    <option <?php echo ($hasType && $hasType == 'probably_century') ? 'selected':'' ?> value="probably_century">Século provável - [18--?]</option>
                 </select>
             </span>    
         </span>
     <?php endif; ?>   
     <?php
-    initScriptsDate();
+    initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequired);
+    if($hasValue && $hasValue !== ''): 
+    ?> 
+    <script>
+        $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').trigger('change');
+        $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('<?php echo $hasValue ?>');
+    </script>
+    <?php    
+    endif;    
 }
 
 
-function initScriptsDate(){
+function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequired){
     ?>
     <script>
         $(function () {
@@ -413,7 +430,7 @@ function initScriptsDate(){
             $(".exactly_century").mask('99--', {placeholder: "99--"});
             $(".probably_century").mask('99--?', {placeholder: "99--?"});
 
-            $("#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>").datepicker({
+            $("#date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>").datepicker({
                 dateFormat: 'dd/mm/yy',
                 dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
                 dayNamesMin: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
@@ -426,7 +443,151 @@ function initScriptsDate(){
                 buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
                 buttonImageOnly: true
             });
+            
+            $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').change(function () {
+                $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
+                $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
+            });
+            
+            $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').keyup(function () {
+                <?php if($isRequired):  ?>
+                    validateFieldsMetadataText($(this).val(),'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                <?php endif; ?>
+                $.ajax({
+                    url: $('#src').val() + '/controllers/object/form_item_controller.php',
+                    type: 'POST',
+                    data: {
+                        operation: 'saveValue',
+                        type: 'data',
+                        plugin:'aacr2',
+                        value_plugin:$(this).val(),
+                        type_plugin:$('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val(),
+                        value: '',
+                        item_id: '<?php echo $item_id ?>',
+                        compound_id: '<?php echo $compound_id ?>',
+                        property_children_id: '<?php echo $property_id ?>',
+                        index: <?php echo $index_id ?>,
+                        indexCoumpound: 0
+                    }
+                }).done(function (result) {
+                    <?php //if($this->isKey): ?>
+//                     var json =JSON.parse(result);
+//                     if(json.value){
+//                        $('#date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
+//                            toastr.error(json.value+' <?php _e(' is already inserted!', 'tainacan') ?>', '<?php _e('Attention!', 'tainacan') ?>', {positionClass: 'toast-bottom-right'});
+//                     }
+                    <?php //endif; ?>
+                });
+            });
         });     
     </script>   
     <?php    
+}
+
+
+add_action('action_save_item', 'aacr2_action_save_item', 11, 1);
+function aacr2_action_save_item($data){
+    $object_id = $data['item_id'];
+    $compound_id = $data['compound_id'];
+    $property_children_id = $data['property_children_id'];
+    if ($property_children_id == 0) {
+        $property_id = $compound_id;
+    }else{
+        $property_id = $property_children_id;
+    }
+    $index_id = $data['index_id'];
+    if(isset($data['plugin'])){
+        if (!empty(trim($data["value_plugin"]))) {
+            delete_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date");
+            add_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date", $data["value_plugin"]);
+            delete_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date_type");
+            add_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date_type",$data["type_plugin"]);
+        }
+        switch ($data["type_plugin"]) {
+            case 'exactly_date':
+                $date = $data["value_plugin"];
+                $value = explode('/', $date)[2] . '-' . explode('/', $date)[1] . '-' . explode('/', $date)[0];
+                add_post_meta($object_id, "socialdb_property_$property_id", $value);
+                return true;
+            case 'year_year':
+                $date = $data["value_plugin"];
+                $values = explode('ou', $date);
+                $first_value = str_replace(' ', '', $values[0]);
+                $second_value = str_replace(' ', '', $values[1]);
+                if ((int) $first_value < (int) $second_value) {
+                    $first_value = $first_value . '-01-01';
+                    $second_value = $second_value . '-12-31';
+                } else {
+                    $second_value = $second_value . '-01-01';
+                    $first_value = $first_value . '-12-31';
+                }
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'between_date':
+                $date = $data["value_plugin"];
+                $date = str_replace('Entre ', '', $date);
+                $values = explode('e', $date);
+                $first_value = str_replace(' ', '', $values[0]);
+                $second_value = str_replace(' ', '', $values[1]);
+                if ((int) $first_value < (int) $second_value) {
+                    $first_value = $first_value . '-01-01';
+                    $second_value = $second_value . '-12-31';
+                } else {
+                    $second_value = $second_value . '-01-01';
+                    $first_value = $first_value . '-12-31';
+                }
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'probably_date':
+                $date = $data["value_plugin"];
+                $year = str_replace('?', '', $date);
+                $second_value = $year . '-01-01';
+                $first_value = $year . '-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'approximate_date':
+                $date = $data["value_plugin"];
+                $year = str_replace('ca. ', '', $date);
+                $second_value = $year . '-01-01';
+                $first_value = $year . '-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'exactly_decade':
+                $date = $data["value_plugin"];
+                $year = str_replace('-', '', $date);
+                $second_value = $year . '0-01-01';
+                $first_value = $year . '9-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'probably_decade':
+                $date = $data["value_plugin"];
+                $year = str_replace('-?', '', $date);
+                $second_value = $year . '0-01-01';
+                $first_value = $year . '9-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'exactly_century':
+                $date = $data["value_plugin"];
+                $year = str_replace('--', '', $date);
+                $second_value = $year . '00-01-01';
+                $first_value = $year . '99-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+            case 'probably_century':
+                $date = $data["value_plugin"];
+                $year = str_replace('--?', '', $date);
+                $second_value = $year . '00-01-01';
+                $first_value = $year . '99-12-31';
+                add_post_meta($object_id, "socialdb_property_$property_id", $second_value);
+                add_post_meta($object_id, "socialdb_property_$property_id", $first_value);
+                return true;
+        }
+    }
 }
