@@ -410,6 +410,9 @@ function aacr2_alter_input_date($array) {
     <script>
         $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').trigger('change');
         $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('<?php echo $hasValue ?>');
+        <?php if($isRequired):  ?>
+            validateFieldsMetadataText('<?php echo $hasValue ?>','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+        <?php endif; ?>
     </script>
     <?php    
     endif;    
@@ -446,6 +449,9 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
             
             $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').change(function () {
                 $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
+                <?php if($isRequired):  ?>
+                    validateFieldsMetadataText('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                <?php endif; ?>
                 $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
             });
             
