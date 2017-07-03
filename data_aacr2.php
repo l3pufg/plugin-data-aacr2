@@ -411,7 +411,7 @@ function aacr2_alter_input_date($array) {
         $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').trigger('change');
         $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('<?php echo $hasValue ?>');
         <?php if($isRequired):  ?>
-            validateFieldsMetadataText('<?php echo $hasValue ?>','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+            validateFieldsMetadataPlugin('<?php echo $hasValue ?>','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
         <?php endif; ?>
     </script>
     <?php    
@@ -450,14 +450,14 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
             $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').change(function () {
                 $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
                 <?php if($isRequired):  ?>
-                    validateFieldsMetadataText('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                    validateFieldsMetadataPlugin('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
                 <?php endif; ?>
                 $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
             });
             
             $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').keyup(function () {
                 <?php if($isRequired):  ?>
-                    validateFieldsMetadataText($(this).val(),'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                    validateFieldsMetadataPlugin($(this).val(),'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
                 <?php endif; ?>
                 $.ajax({
                     url: $('#src').val() + '/controllers/object/form_item_controller.php',
@@ -485,7 +485,37 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
                     <?php //endif; ?>
                 });
             });
-        });     
+        }); 
+        
+         function validateFieldsMetadataPlugin(val,compound_id,property_id,index_id){
+                if(val == ''){
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).removeClass('has-success has-feedback');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).addClass('has-error has-feedback');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .glyphicon-remove').show();
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .glyphicon-ok').hide();
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .validate-class').val('false');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).val('false');
+                }else{
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).removeClass('has-error has-feedback');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).addClass('has-success has-feedback');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .glyphicon-remove').hide();
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .glyphicon-ok').show();
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .validate-class').val('true');
+                    $('#validation-'+compound_id+'-'+property_id+'-'+index_id).val('true');
+                    setTimeout(function(){
+                        if( $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .form-control').val()!=''){
+                            $('#validation-'+compound_id+'-'+property_id+'-'+index_id).removeClass('has-success has-feedback');
+                            $('#validation-'+compound_id+'-'+property_id+'-'+index_id+' .glyphicon-ok').hide();
+                        }
+                    }, 2000);
+                    //mostro a mensagem do proprio metadado
+                    console.log( $('#validation-'+compound_id+'-'+property_id+'-'+index_id).parent().parent().find('p .alert-compound-'+property_id));
+                    if( $('#validation-'+compound_id+'-'+property_id+'-'+index_id).parent().parent().find('p .alert-compound-'+property_id).length>0)
+                         $('#validation-'+compound_id+'-'+property_id+'-'+index_id).parent().parent().find('p .alert-compound-'+property_id).hide();
+                    else
+                        $('.alert-compound-'+compound_id).hide();
+                }
+            }
     </script>   
     <?php    
 }
