@@ -534,6 +534,7 @@ function aacr2_action_save_item($data){
     $index_id = $data['index_id'];
     if(isset($data['plugin'])){
         if (!empty(trim($data["value_plugin"]))) {
+            delete_post_meta($object_id, "socialdb_property_{$compound_id}");
             delete_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date");
             add_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date", $data["value_plugin"]);
             delete_post_meta($object_id, "socialdb_property_{$compound_id}_{$property_children_id}_date_type");
