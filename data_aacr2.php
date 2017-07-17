@@ -359,7 +359,7 @@ function aacr2_alter_input_date($array) {
         $property = $array['compound'];
     }
     $isRequired = ($property['metas'] && $property['metas']['socialdb_property_required'] && $property['metas']['socialdb_property_required'] != 'false') ? true : false;
-    $value_before = $array['value'];
+    $value_before = (is_array($array['value']) && isset($array['value'][0])) ? $array['value'][0] : $array['value'];
     $hasValue = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date", true);
     $hasType = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date_type", true);
     ?>
