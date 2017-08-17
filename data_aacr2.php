@@ -96,15 +96,15 @@ function data_aacr2_form_item_data_widget($property) {
     ?>
     <script>
         $(function () {
-            $('.exactly_date').mask('00/00/0000', {placeholder: "DD/MM/YYYY"});
-            $(".year_year").mask('9999 ou 9999', {placeholder: "YYYY ou YYYY"});
-            $(".probably_date").mask('9999?', {placeholder: "YYYY?"});
-            $(".between_date").mask('Entre 9999 e 9999', {placeholder: "Entre 9999 e 9999"});
-            $(".approximate_date").mask('ca. 9999', {placeholder: "ca. 9999"});
-            $(".exactly_decade").mask('999-', {placeholder: "999-"});
-            $(".probably_decade").mask('999-?', {placeholder: "999-?"});
-            $(".exactly_century").mask('99--', {placeholder: "99--"});
-            $(".probably_century").mask('99--?', {placeholder: "99--?"});
+            $('.exactly_date').mask('[00/00/0000]', {placeholder: "[DD/MM/YYYY]"});
+            $(".year_year").mask('[9999 ou 9999]', {placeholder: "[YYYY ou YYYY]"});
+            $(".probably_date").mask('[9999?]', {placeholder: "[YYYY?]"});
+            $(".between_date").mask('[Entre 9999 e 9999]', {placeholder: "[Entre 9999 e 9999]"});
+            $(".approximate_date").mask('[ca. 9999]', {placeholder: "[ca. 9999]"});
+            $(".exactly_decade").mask('[999-]', {placeholder: "[999-]"});
+            $(".probably_decade").mask('[999-?]', {placeholder: "[999-?]"});
+            $(".exactly_century").mask('[99--]', {placeholder: "[99--]"});
+            $(".probably_century").mask('[99--?]', {placeholder: "[99--?]"});
 
             $("#socialdb_property_<?php echo $property['id']; ?>_<?php echo $i; ?>").datepicker({
                 dateFormat: 'dd/mm/yy',
@@ -142,11 +142,11 @@ function data_aacr2_form_item_data_widget($property) {
                 set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
                 <?php else: ?>
                 if( cont===0){
-                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('false');
-                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'  + <?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('false');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+ <?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
                 }else{
-                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('true');
-                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+ <?php echo $property['id']; ?> + '_<?php echo $i; ?>').val('true');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+ <?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
                 }
                 <?php endif ?>
             });
@@ -167,11 +167,11 @@ function data_aacr2_form_item_data_widget($property) {
                 set_field_valid(<?php echo $property['id']; ?>, 'core_validation_' + <?php echo $property['id']; ?>);
                 <?php else: ?>
                 if( cont===0){
-                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('false');
-                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?> + '_<?php echo $i; ?>').val('false');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_' + <?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>);
                 }else{
-                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('true');
-                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+<?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
+                    $('#core_validation_<?php echo $property['compound_id'] ?>_'+ <?php echo $property['id']; ?>+ '_<?php echo $i; ?>').val('true');
+                    set_field_valid_compounds(<?php echo $property['id']; ?>,'core_validation_<?php echo $property['compound_id'] ?>_'+ <?php echo $property['id']; ?>+ '_<?php echo $i; ?>',<?php echo $property['compound_id'] ?>)
                 }
                 <?php endif ?>
             });
@@ -423,15 +423,15 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
     ?>
     <script>
         $(function () {
-            $('.exactly_date').mask('00/00/0000', {placeholder: "DD/MM/YYYY"});
-            $(".year_year").mask('9999 ou 9999', {placeholder: "YYYY ou YYYY"});
-            $(".probably_date").mask('9999?', {placeholder: "YYYY?"});
-            $(".between_date").mask('Entre 9999 e 9999', {placeholder: "Entre 9999 e 9999"});
-            $(".approximate_date").mask('ca. 9999', {placeholder: "ca. 9999"});
-            $(".exactly_decade").mask('999-', {placeholder: "999-"});
-            $(".probably_decade").mask('999-?', {placeholder: "999-?"});
-            $(".exactly_century").mask('99--', {placeholder: "99--"});
-            $(".probably_century").mask('99--?', {placeholder: "99--?"});
+            $('.exactly_date').mask('[00/00/0000]', {placeholder: "[DD/MM/YYYY]"});
+            $(".year_year").mask('[9999 ou 9999]', {placeholder: "[YYYY ou YYYY]"});
+            $(".probably_date").mask('[9999?]', {placeholder: "[YYYY?]"});
+            $(".between_date").mask('[Entre 9999 e 9999]', {placeholder: "[Entre 9999 e 9999]"});
+            $(".approximate_date").mask('[ca. 9999]', {placeholder: "[ca. 9999]"});
+            $(".exactly_decade").mask('[999-]', {placeholder: "[999-]"});
+            $(".probably_decade").mask('[999-?]', {placeholder: "[999-?]"});
+            $(".exactly_century").mask('[99--]', {placeholder: "[99--]"});
+            $(".probably_century").mask('[99--?]', {placeholder: "[99--?]"});
 
             $("#date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>").datepicker({
                 dateFormat: 'dd/mm/yy',
