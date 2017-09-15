@@ -362,6 +362,7 @@ function aacr2_alter_input_date($array) {
     $value_before = (is_array($array['value']) && isset($array['value'][0])) ? $array['value'][0] : $array['value'];
     $hasValue = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date", true);
     $hasType = get_post_meta($item_id, "socialdb_property_{$compound_id}_{$property_id}_date_type", true);
+    $cl =  "$compound_id-$property_id-$index_id";
     ?>
         <span id="input-date-<?php echo $property['id']; ?>" style="<?php echo ($hasValue && $hasValue!=='') ? 'display:none;': '' ?>">
         <input 
@@ -379,11 +380,10 @@ function aacr2_alter_input_date($array) {
         <br>
         <span id="container-approximate-date-<?php echo $property['id']; ?>" class="row" style="<?php echo ($hasValue && $hasValue!=='') ? '': 'display:none;' ?>">
             <span class="col-md-2 no-padding">
-                <input type="text" 
-                       value=""
+                <input type="text"
                        id="date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>"
                        value=""
-                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date" 
+                       class="form-control data_aproximada form_autocomplete_value_<?php echo $property['id']; ?>_<?php echo $i; ?> exactly_date<?php echo $cl ?>"
                        name="socialdb_property_<?php echo $property['id']; ?>_approximate_date">
             </span>
             <span class="col-md-3">
@@ -400,7 +400,7 @@ function aacr2_alter_input_date($array) {
                     <option <?php echo ($hasType && $hasType == 'exactly_century') ? 'selected':'' ?> value="exactly_century">Século certo - [18--]</option>
                     <option <?php echo ($hasType && $hasType == 'probably_century') ? 'selected':'' ?> value="probably_century">Século provável - [18--?]</option>
                 </select>
-            </span>    
+            </span>
         </span>
     <?php endif; ?>   
     <?php
@@ -408,11 +408,13 @@ function aacr2_alter_input_date($array) {
     if($hasValue && $hasValue !== ''): 
     ?> 
     <script>
-        $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').trigger('change');
-        $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('<?php echo $hasValue ?>');
-        <?php if($isRequired):  ?>
-            validateFieldsMetadataPlugin('<?php echo $hasValue ?>','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
-        <?php endif; ?>
+        $(function(){
+            $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').trigger('change');
+            $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('<?php echo $hasValue ?>');
+            <?php if($isRequired):  ?>
+            validateFieldsMetadataPlugin<?php echo $compound_id ?>('<?php echo $hasValue ?>','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>');
+            <?php endif; ?>
+        });
     </script>
     <?php    
     endif;    
@@ -420,18 +422,32 @@ function aacr2_alter_input_date($array) {
 
 
 function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequired){
+    $cl =  "$compound_id-$property_id-$index_id";
     ?>
     <script>
         $(function () {
-            $('.exactly_date').mask('[00/00/0000]', {placeholder: "[DD/MM/YYYY]"});
-            $(".year_year").mask('[9999 ou 9999]', {placeholder: "[YYYY ou YYYY]"});
-            $(".probably_date").mask('[9999?]', {placeholder: "[YYYY?]"});
-            $(".between_date").mask('[Entre 9999 e 9999]', {placeholder: "[Entre 9999 e 9999]"});
-            $(".approximate_date").mask('[ca. 9999]', {placeholder: "[ca. 9999]"});
-            $(".exactly_decade").mask('[999-]', {placeholder: "[999-]"});
-            $(".probably_decade").mask('[999-?]', {placeholder: "[999-?]"});
-            $(".exactly_century").mask('[99--]', {placeholder: "[99--]"});
-            $(".probably_century").mask('[99--?]', {placeholder: "[99--?]"});
+
+            var options =  function(placeholder){ return {
+                placeholder: placeholder,
+                onComplete: function (val) {
+                    console.log('complete',val);
+                    validateFieldsMetadataPlugin<?php echo $compound_id ?>(val,'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                },
+                onKeyPress: function (cep, event, currentField, options) {
+                    console.log(cep, event, currentField, options);
+                    validateFieldsMetadataPlugin<?php echo $compound_id ?>('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                }
+            }};
+
+            $('.exactly_date<?php echo $cl ?>').mask('[00/00/0000]', options("[DD/MM/YYYY]"));
+            $(".year_year<?php echo $cl ?>").mask('[0000 ou 0000]', options("[YYYY ou YYYY]"));
+            $(".probably_date<?php echo $cl ?>").mask('[9999?]',  options("[YYYY?]"));
+            $(".between_date<?php echo $cl ?>").mask('[Entre 9999 e 9999]',  options("[Entre 9999 e 9999]"));
+            $(".approximate_date<?php echo $cl ?>").mask('[ca. 9999]',  options("[ca. 9999]"));
+            $(".exactly_decade<?php echo $cl ?>").mask('[999-]',  options("[999-]"));
+            $(".probably_decade<?php echo $cl ?>").mask('[999-?]',  options("[999-?]"));
+            $(".exactly_century<?php echo $cl ?>").mask('[99--]',  options("[99--]"));
+            $(".probably_century<?php echo $cl ?>").mask('[99--?]',  options("[99--?]"));
 
             $("#date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>").datepicker({
                 dateFormat: 'dd/mm/yy',
@@ -450,44 +466,47 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
             $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').change(function () {
                 $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
                 <?php if($isRequired):  ?>
-                    validateFieldsMetadataPlugin('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                    validateFieldsMetadataPlugin<?php echo $compound_id ?>('','<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
                 <?php endif; ?>
-                $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').removeClass("exactly_date year_year probably_date between_date approximate_date exactly_decade probably_decade exactly_century probably_century").addClass($(this).val());
+                $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>')
+                    .removeClass("exactly_date<?php echo $cl ?> year_year<?php echo $cl ?> probably_date<?php echo $cl ?> between_date<?php echo $cl ?> approximate_date<?php echo $cl ?> exactly_decade<?php echo $cl ?> probably_decade<?php echo $cl ?> exactly_century<?php echo $cl ?> probably_century<?php echo $cl ?>").addClass($(this).val()+'<?php echo $cl ?>');
             });
             
-            $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').keyup(function () {
-                <?php if($isRequired):  ?>
-                    validateFieldsMetadataPlugin($(this).val(),'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
-                <?php endif; ?>
-                $.ajax({
-                    url: $('#src').val() + '/controllers/object/form_item_controller.php',
-                    type: 'POST',
-                    data: {
-                        operation: 'saveValue',
-                        type: 'data',
-                        plugin:'aacr2',
-                        value_plugin:$(this).val(),
-                        type_plugin:$('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val(),
-                        value: '',
-                        item_id: '<?php echo $item_id ?>',
-                        compound_id: '<?php echo $compound_id ?>',
-                        property_children_id: '<?php echo $property_id ?>',
-                        index: <?php echo $index_id ?>,
-                        indexCoumpound: 0
-                    }
-                }).done(function (result) {
-                    <?php //if($this->isKey): ?>
+            $('#date-approximate-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').blur(function () {
+                if( $('#validation-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id ?> .validate-class').val()==='true') {
+                    <?php if($isRequired):  ?>
+                    validateFieldsMetadataPlugin<?php echo $compound_id ?>($(this).val(),'<?php echo $compound_id ?>','<?php echo $property_id ?>','<?php echo $index_id ?>')
+                    <?php endif; ?>
+                    $.ajax({
+                        url: $('#src').val() + '/controllers/object/form_item_controller.php',
+                        type: 'POST',
+                        data: {
+                            operation: 'saveValue',
+                            type: 'data',
+                            plugin: 'aacr2',
+                            value_plugin: $(this).val(),
+                            type_plugin: $('#date-select-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val(),
+                            value: '',
+                            item_id: '<?php echo $item_id ?>',
+                            compound_id: '<?php echo $compound_id ?>',
+                            property_children_id: '<?php echo $property_id ?>',
+                            index: <?php echo $index_id ?>,
+                            indexCoumpound: 0
+                        }
+                    }).done(function (result) {
+                        <?php //if($this->isKey): ?>
 //                     var json =JSON.parse(result);
 //                     if(json.value){
 //                        $('#date-field-<?php echo $compound_id ?>-<?php echo $property_id ?>-<?php echo $index_id; ?>').val('');
 //                            toastr.error(json.value+' <?php _e(' is already inserted!', 'tainacan') ?>', '<?php _e('Attention!', 'tainacan') ?>', {positionClass: 'toast-bottom-right'});
 //                     }
-                    <?php //endif; ?>
-                });
+                        <?php //endif; ?>
+                    });
+                }
             });
         }); 
         
-         function validateFieldsMetadataPlugin(val,compound_id,property_id,index_id){
+         function validateFieldsMetadataPlugin<?php echo $compound_id ?>(val,compound_id,property_id,index_id){
                 if(val == ''){
                     $('#validation-'+compound_id+'-'+property_id+'-'+index_id).removeClass('has-success has-feedback');
                     $('#validation-'+compound_id+'-'+property_id+'-'+index_id).addClass('has-error has-feedback');
@@ -522,7 +541,7 @@ function initScriptsDate($compound_id,$property_id,$index_id,$item_id,$isRequire
 
 
 add_action('action_save_item', 'aacr2_action_save_item', 11, 1);
-function aacr2_action_save_item($data){
+function aacr2_action_save_item($data){    
     $object_id = $data['item_id'];
     $compound_id = $data['compound_id'];
     $property_children_id = $data['property_children_id'];
