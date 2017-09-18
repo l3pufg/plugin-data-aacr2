@@ -9,6 +9,7 @@ function data_aacr2_edit_property(elem) {
 
 function showContainerApproximate(checkbox, id) {
     var i = $(checkbox).attr('id').split('_')[2];
+    console.log(i);
     if ($(checkbox).is(':checked')) {
         $('#input-date-' + id).hide();
         $('#container-approximate-date-' + id).show();
